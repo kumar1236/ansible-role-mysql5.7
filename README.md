@@ -1,7 +1,7 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+  Works for mysql5.6 and above , it solves the issue with login password after mysql5.7 installation through ansible
 
 Requirements
 ------------
@@ -25,7 +25,7 @@ Including an example of how to use your role (for instance, with variables passe
 
     - hosts: servers
       roles:
-         - { role: username.rolename, x: 42 }
+         - mysql
 
 License
 -------
