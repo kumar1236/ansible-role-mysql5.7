@@ -1,0 +1,8 @@
+---
+# vars file for mysql
+mysql_login_password: MyNewPass@1234
+mysql_login_user: root
+mysql_db: employee_db
+mysql_user: db_user
+mysql_user_password: Passw0rd@1234
+

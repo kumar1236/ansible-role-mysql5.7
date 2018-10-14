@@ -1,0 +1,45 @@
+---
+# tasks file for mysql
+- name: Add repository
+  yum:
+      name: https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm
+      state: installed
+
+- name: Install MySql database
+  yum:
+      name: '{{ item }}'
+      state: installed
+  with_items:
+      - mysql-server
+  register: mysqlinstall
+
+- name: Start Mysql service after install
+  systemd:
+      name: mysqld
+      state: started
+  when: mysqlinstall.changed
+
+- name: reset mysql default password 
+  shell: mysql_secret=$(sudo grep 'temporary password' /var/log/mysqld.log | awk '{print $NF}') && mysqladmin -u root --password=${mysql_secret} password {{ mysql_login_password }}
+  when: mysqlinstall.changed    
+
+- name: Start Mysql service
+  systemd:
+      name: mysqld
+      state: started
+
+- name: Create Application database
+  mysql_db:
+      name: "{{ mysql_db }}"
+      login_user: "{{ mysql_login_user }}"
+      login_password: "{{ mysql_login_password }}"
+      state: present
+
+- name: Create Application DB user
+  mysql_user:
+      name: "{{ mysql_user }}"
+      password: "{{ mysql_user_password }}"
+      priv: '{{ mysql_db }}.*:ALL,GRANT'
+      login_user: "{{ mysql_login_user }}"
+      login_password: "{{ mysql_login_password }}"
+      state: present
